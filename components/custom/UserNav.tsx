@@ -8,7 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSepar
 import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu'
 import Image from 'next/image'
 import { Button } from '../ui/button'
-import { signIn } from 'next-auth/react'
+import { signIn, signOut } from 'next-auth/react'
 import { Coins, LockKeyholeIcon, LogOut, Settings, SparkleIcon } from 'lucide-react'
 
 interface Session extends DefaultSession {
@@ -32,7 +32,11 @@ const UserNav = ({ user }: { user: Session | null }) => {
                                     </div>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent className='w-40 py-2'>
-                                        <DropdownMenuLabel className='px-4 font-semibold'>Account</DropdownMenuLabel>
+                                        <DropdownMenuLabel className='px-4 font-semibold'>
+                                            <div className='flex flex-col gap-0.5'>
+                                                <div>{user?.user.name}</div>
+                                                <div className='text-[8px] text-muted-foreground font-light'>{user?.user.email}</div>
+                                            </div></DropdownMenuLabel>
                                         <DropdownMenuSeparator/>
                                         <DropdownMenuItem className='outline-none px-4 py-1 cursor-pointer hover:bg-zinc-100 rounded-sm flex items-center gap-2'>
                                             <SparkleIcon className='h-4 w-4'/> Premium
@@ -45,7 +49,7 @@ const UserNav = ({ user }: { user: Session | null }) => {
                                         </DropdownMenuItem>
 
                                         <DropdownMenuSeparator/>
-                                        <DropdownMenuItem className='outline-none px-4 py-1 text-red-500 cursor-pointer hover:bg-zinc-100 rounded-sm flex items-center gap-2'>
+                                        <DropdownMenuItem onClick={()=>signOut()} className='outline-none px-4 py-1 text-red-500 cursor-pointer hover:bg-zinc-100 rounded-sm flex items-center gap-2'>
                                             <LogOut className='h-4 w-4'/> Logout
                                         </DropdownMenuItem>
                                        
