@@ -56,3 +56,50 @@ model Session {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+
+model Course {
+  id String @id @default(uuid())
+  name String
+  image String
+  views Int? @default(0)
+  units Unit[]
+  
+}
+
+model Unit {
+  id String @id @default(uuid())
+  courseId String
+
+  name String
+  course Course @relation(fields: [courseId] , references: [id])
+  chapters Chapter[]
+
+  @@index([courseId] , name : "courseId")
+}
+
+model Chapter {
+  id String @id @default(uuid())
+  unitId String
+
+  name String
+  youtubeSearchQuery String
+  videoId String?
+  summary String? @db.VarChar(3000)
+  unit Unit @relation(fields: [unitId] , references: [id])
+  Questions Question[]
+
+  @@index([unitId] , name : "unitId")
+}
+
+model Question {
+   id String @id @default(uuid())
+   chatperId String
+
+   question String @db.VarChar(3000)
+   answer String @db.VarChar(3000)
+   options String @db.VarChar(3000)
+   chapter Chapter @relation(fields: [chatperId] , references: [id])
+
+   @@index([chatperId] , name : "chapterId")
+}

@@ -3,6 +3,8 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/custom/Navbar";
 import { getAuthSession } from "@/config/auth";
+import Provider from "@/components/Provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Poppins({
   subsets : ["latin"],
@@ -20,17 +22,24 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  const user = await getAuthSession();
+  const safeUser = await getAuthSession();
+  const user = safeUser ? JSON.parse(JSON.stringify(safeUser)) : null;
+
+
 
 
   return (
      <html lang="en">
+
       <body
         className={`${inter.className} antialiased`}
-      >
+        >
      
-         <Navbar user={user}/>
+        <Provider>
+         <Navbar username={user?.user.name} useremail={user?.user.email} useravatar={user?.user.image}/>
         {children}
+        <Toaster/>
+      </Provider>
         
       </body>
     </html>

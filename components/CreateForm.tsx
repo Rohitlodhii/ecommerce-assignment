@@ -1,6 +1,6 @@
 "use client"
 import {z} from 'zod';
-import React, { useState } from 'react'
+import React from 'react'
 import { useForm } from 'react-hook-form';
 import { createSchema } from '@/config/validators/course';
 import {zodResolver} from '@hookform/resolvers/zod'
@@ -10,10 +10,23 @@ import { Button } from './ui/button';
 import {Loader, Plus, Trash, X } from 'lucide-react';
 
 import {motion , AnimatePresence} from 'framer-motion'
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const CreateForm = () => {
 
-    const [isLoading , setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const { mutate: createChapters, isPending } = useMutation({
+    mutationFn: async ({title , units}: z.infer<typeof createSchema>) => {
+      const response = await axios.post('/api/course/createChapters', {title , units});
+      return response.data;
+    }
+  });
+
+
     
     const form = useForm<z.infer<typeof createSchema>>({
         resolver : zodResolver(createSchema),
@@ -24,9 +37,21 @@ const CreateForm = () => {
     })
 
     function onSubmit(values : z.infer<typeof createSchema>){
-        setIsLoading(true);
-        console.log(values);
-        setIsLoading(false);
+
+      
+       createChapters(values , {
+        onSuccess : () => {
+          toast("Course Created successfully")
+
+          router.push(`/course/`)
+
+        },  
+        onError : (error) => {
+          toast("Error in Creating Course , Try Again");
+          console.log(error);
+        }
+
+       });
     }
 
 
@@ -100,7 +125,7 @@ const CreateForm = () => {
        </div>
         </div>  
 
-            {isLoading ? (
+            {isPending ? (
                     <Button type='submit' disabled className='w-40'><Loader className='animate-spin'/></Button>
             ) : (
                 <Button className='w-40' type="submit">Create Course</Button>

@@ -7,19 +7,10 @@ import { Button } from '../ui/button'
 import { ArrowLeftIcon, Book, Flame, MenuIcon, Plus } from 'lucide-react'
 
 
-import { DefaultSession } from 'next-auth'
-
 import UserNav from './UserNav'
 import {  useRouter } from 'next/navigation'
 
 
-
-interface Session extends DefaultSession {
-    user: {
-        id: string,
-        credits: number,
-    } & DefaultSession["user"]
-}
 
 const NavbarItemsList = [
     {
@@ -46,7 +37,7 @@ const NavbarItemsList = [
 
 
 
-const Navbar = ({ user }: { user: Session | null }) => {
+const Navbar = ({ username , useremail , useravatar }: { username :string | null | undefined , useremail : string | null | undefined , useravatar : string | null | undefined}) => {
 
     const router = useRouter();
 
@@ -65,7 +56,7 @@ const Navbar = ({ user }: { user: Session | null }) => {
 
 
 
-                    {user ? (NavbarItemsList.map((item, index) => (
+                    {username ? (NavbarItemsList.map((item, index) => (
 
                         <div className='px-4 py-3 bg-zinc-50 w-full cursor-pointer rounded-sm flex items-center justify-start gap-4  ' key={index}>< item.icon className='h-6 w-6' /> {item.title}</div>
 
@@ -94,7 +85,7 @@ const Navbar = ({ user }: { user: Session | null }) => {
 
 
                 <div className='hidden md:flex items-center justify-center gap-2'>
-                    {user ? (NavbarItemsList.map((item, index) => (
+                    {username ? (NavbarItemsList.map((item, index) => (
 
                         <button onClick={()=>router.push(item.link)} key={index} className='px-3 bg-zinc-50 py-2 cursor-pointer hover:bg-muted rounded-md flex items-center gap-2 hover:outline hover:outline-zinc-300
                                 '><item.icon className='h-5 w-5 text-muted-foreground' /> {item.title}</button>
@@ -115,7 +106,7 @@ const Navbar = ({ user }: { user: Session | null }) => {
 
                 </div>
                 <div className='ml-auto flex gap-2'>
-                    <UserNav user={user} />
+                    <UserNav username={username} useremail={useremail} useravatar={useravatar} />
                 </div>
 
 
